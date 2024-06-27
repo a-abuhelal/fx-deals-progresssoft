@@ -115,14 +115,12 @@ Describe the structure of your project's source code. For example:
 
 ### Steps
 
-1. Clone the repository: `git clone <>`
-2. Navigate to the project directory: `cd fx_deals`
+1. Clone the repository: `git clone <https://github.com/a-abuhelal/fx-deals-progresssoft.git>`
+2. Navigate to the project directory: `cd fx-deals`
 3. Build the project: `./gradlew build`
 4. Run the application: `./gradlew bootRun`
 
 ## Configuration
-
-Explain any configuration settings needed for your project.
 
 ### Database Configuration
 
@@ -134,7 +132,128 @@ spring.datasource.password=password
 ```
 ### External Services
 
-Document any configurations for external services, if applicable.
+#### Prerequisites
+
+Before you start, ensure you have the following software installed on your system:
+
+- Docker
+- Docker Compose
+
+#### Docker Configuration
+
+The project uses Docker for containerization and deployment. Follow these steps to configure and run the project using Docker.
+
+#### Dockerfile
+
+The Dockerfile is used to build the Docker image for the Spring Boot application. Here's the Dockerfile:
+
+```dockerfile
+# Use an official Gradle image to build the app
+FROM gradle:8.8.0-jdk17 AS build
+WORKDIR /app
+COPY . .
+
+# Build the application
+RUN gradle clean bootJar
+
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+# Copy the built JAR from the build stage
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+#### Docker Compose
+
+Docker Compose is used to define and run multi-container Docker applications. Here's the docker-compose.yml file:
+
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: bloomberg_fx
+    ports:
+      - "3303:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - mysql-spring-boot
+
+  app:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/bloomberg_fx
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+    depends_on:
+      - db
+    networks:
+      - mysql-spring-boot
+    restart: on-failure
+volumes:
+  mysql-data:
+networks:
+  mysql-spring-boot:
+    driver: bridge
+    
+```
+
+#### Running the Application
+
+To build and run the application, follow these steps:
+
+1. Open a terminal and navigate to the directory containing the docker-compose.yml file.
+2. Build and start the containers using Docker Compose:
+
+```sh
+docker-compose up --build
+```
+
+This command will build the Docker images and start the containers as defined in the docker-compose.yml file.
+
+#### Accessing the Application
+
+Once the containers are up and running, the Spring Boot application will be accessible at http://localhost:8080.
+
+#### Stopping the Application
+
+To stop the running containers, use the following command:
+
+```sh
+docker-compose down
+```
+
+#### Cleaning Up
+
+If you need to remove the Docker volumes to start fresh (this will delete the MySQL data), use the following command:
+
+```sh
+docker-compose down -v
+```
+
+#### Environment Variables
+
+The following environment variables are used for the database configuration:
+
+- `SPRING_DATASOURCE_URL`: The JDBC URL for the MySQL database.
+- `SPRING_DATASOURCE_USERNAME`: The username for accessing the MySQL database.
+- `SPRING_DATASOURCE_PASSWORD`: The password for accessing the MySQL database.
+
+These variables are set in the docker-compose.yml file under the environment section of the app service.
 
 ## Usage
 
@@ -142,29 +261,16 @@ Describe how to use your application.
 
 ### Endpoints
 
-POST /api/fx_deals: Create new FX deals.
-GET /api/fx_deals: Retrieve all FX deals.
-GET /api/fx_deals/{dealUniqueId}: Retrieve a specific FX deal by unique ID.
+- `POST /api/fx_deals` : Create new FX deals.
+- `GET /api/fx_deals` : Retrieve all FX deals.
+- `GET /api/fx_deals/{dealUniqueId}` : Retrieve a specific FX deal by unique ID.
 
 ### Examples
-Provide examples of requests and responses for each endpoint.
 
 - **Create a new FX deal**:
 
-POST /api/fx_deals
-
-{
-  "dealUniqueId": "123",
-  "fromCurrencyIsoCode": "USD",
-  "toCurrencyIsoCode": "EUR",
-  "dealTimestamp": "2024-06-28T12:00:00",
-  "dealAmount": 1000.0
-}
-
-- **Retrieve all FX deals**:
-
-GET /api/fx_deals
-
+`POST /api/fx_deals`
+```
 [
   {
     "dealUniqueId": "123",
@@ -174,25 +280,28 @@ GET /api/fx_deals
     "dealAmount": 1000.0
   }
 ]
+```
+**Note: The system deals with inserted deals as a list of "FxDeal" so even when inserting one deal it needs to be written in the list format.**
+- **Retrieve all FX deals**:
 
+`GET /api/fx_deals`
+```
+[
+  {
+    "dealUniqueId": "123",
+    "fromCurrencyIsoCode": "USD",
+    "toCurrencyIsoCode": "EUR",
+    "dealTimestamp": "2024-06-28T12:00:00",
+    "dealAmount": 1000.0
+  }
+]
+```
 ## Testing
 
-Explain how to run tests and the types of tests included.
+The only form of testing implemented in this system is **Unit Testing**.
 
 ### Unit Tests
 Describe the unit testing strategy using frameworks like JUnit and Mockito.
-
-## Deployment
-Provide instructions for deploying your application.
-
-### Environment Variables
-List any environment variables or configuration settings required for deployment.
-
-### Deployment Steps
-
-1. Set environment variables.
-2. Build the project: ./gradlew build
-3. Deploy the artifact to a server.
 
 ## Contributing
 Explain how others can contribute to your project.
