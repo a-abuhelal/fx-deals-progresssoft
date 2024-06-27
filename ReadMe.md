@@ -13,19 +13,14 @@
   - [Configuration](#configuration)
     - [Database Configuration](#database-configuration)
     - [External Services](#external-services)
+      - [Docker Configuration](#docker-configuration)
   - [Usage](#usage)
     - [Endpoints](#endpoints)
     - [Examples](#examples)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-  - [Deployment](#deployment)
-    - [Environment Variables](#environment-variables)
-    - [Deployment Steps](#deployment-steps)
-  - [Contributing](#contributing)
-  - [License](#license)
   - [Authors](#authors)
-  - [Acknowledgments](#acknowledgments)
+  - [Side Notes](#Side-Notes)
 
 ## Overview
 
@@ -301,16 +296,29 @@ Describe how to use your application.
 The only form of testing implemented in this system is **Unit Testing**.
 
 ### Unit Tests
-Describe the unit testing strategy using frameworks like JUnit and Mockito.
 
-## Contributing
-Explain how others can contribute to your project.
+The project includes unit tests to ensure the correctness of the core functionalities. Below are the descriptions of the key unit tests:
 
-## License
-Specify the license under which your project is distributed.
+#### FxDealController Tests
+
+These tests verify the behavior of the `FxDealController` class, which handles HTTP requests and responses.
+
+- `testCreateDealsSuccess`: This test verifies that the `createDeals` method successfully creates and saves multiple FX deals. It mocks the service layer to simulate the creation of deals without any duplicates and checks that the correct status code and response body are returned.
+
+- `testCreateDealsPartialSuccess`: This test checks the behavior of the `createDeals` method when some of the deals are duplicates. It ensures that the method returns a partial success status code and correctly identifies which deals were not saved due to duplication.
+
+#### FxDealService Tests
+
+These tests validate the business logic implemented in the `FxDealService` class, which manages the core functionalities of saving and retrieving FX deals.
+
+- `testSaveDealSuccess`: This test ensures that a new FX deal is saved successfully when there are no duplicates. It mocks the repository layer to simulate the saving process and verifies that the deal is saved correctly.
+
+- `testSaveDealDuplicate`: This test verifies that an exception is thrown when attempting to save a duplicate FX deal. It ensures that the service correctly identifies and handles duplicate entries, preventing them from being saved.
+
+These unit tests, written using JUnit and Mockito, provide robust coverage for the critical components of the application, ensuring that the core functionalities work as expected and handle edge cases appropriately.
 
 ## Authors
-List the authors or contributors to the project.
+**Abdullah Helal**
 
-## Acknowledgments
-Acknowledge any individuals, organizations, or resources that you found helpful during the project.
+## Side Notes
+
