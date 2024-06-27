@@ -19,6 +19,7 @@
     - [Examples](#examples)
   - [Testing](#testing)
     - [Unit Tests](#unit-tests)
+  - [Future Enhancements](#future-enhancements)
   - [Authors](#authors)
   - [Side Notes](#Side-Notes)
 
@@ -76,12 +77,6 @@ The FX Deals project is a Spring Boot application designed to manage and analyze
 
 ### Logging
 - **SLF4J**: Used for logging application events, errors, and operations to help with debugging and monitoring.
-
-### Future Enhancements
-- **Authentication & Authorization**: Implement security features to restrict access to the endpoints.
-- **Advanced Search**: Add endpoints for searching deals based on different values.
-- **Reporting**: Generate reports based on the stored FX deals data.
-- **Integration with Other Systems**: Connect with other financial systems for data exchange.
 
 This overview provides a high-level understanding of the FX Deals project, its objectives, features, and the technologies used. The project is designed to be scalable, maintainable, and easily extendable to accommodate future enhancements and integrations.
 
@@ -317,8 +312,46 @@ These tests validate the business logic implemented in the `FxDealService` class
 
 These unit tests, written using JUnit and Mockito, provide robust coverage for the critical components of the application, ensuring that the core functionalities work as expected and handle edge cases appropriately.
 
+## Future Enhancements
+
+### - Writing a MakeFile for the application
+
+### - Enhanced Error Handling
+
+- **Detailed Error Responses:** Implement more detailed error responses to provide users with specific information about why a request failed.
+
+- **Custom Exception Handling:** Develop custom exceptions for various error scenarios to improve code readability and maintainability.
+
+### - More Enhanced Logging 
+
+- **Detailed Process Logging:** Implementing more detailed and advanced logging for each process and making sure all logs are in sync with the exceptions to give more debugging useful information.
+
+### - User Interface
+
+- **Admin Dashboard:** Develop an admin dashboard for managing FX deals and monitoring system status.
+
+### Other Possible Future Enhancements
+
+- **Authentication & Authorization**: Implement security features to restrict access to the endpoints only to authorized users.
+- **Advanced Search**: Add endpoints for searching deals based on different values.
+- **Reporting**: Generate reports based on the stored FX deals data.
+- **Integration with Other Systems**: Connect with other financial systems for data exchange.
+
 ## Authors
-**Abdullah Helal**
+**- Abdullah Helal**
 
 ## Side Notes
 
+- I added the default CURRENT_TIMESTAMP value constraint to the timestamp column in the db to get a default value for it in the table.
+- At first, I struggled with running the application and the error turned out to be the sql dialect, I was using 5 instead  of 8 which was set on my db.
+- I came across the error that when trying to retrieve any deal based on its ID (or any other column) it would always return 404 not found, and wasted a significant amount of time trying to solve it, i ended up realizing that it was not a required feature.
+- While trying to solve this I figured out that when sending the request through postman it doesn’t even go into the method, because the error handlings and logging techniques I used in the method were not triggered, so this helped me thoroughly understands the significance and benifits of having a proper logging and proper error/exception handling.
+- I faced this inconsistency while developing code with help of different ai tools (e.g. chatgpt, github copilot ) or different online sources, which is that a lot of them still consider java 11 the default version.
+- Throughout these 2 days, i learned a lot of new concepts. I learned what springboot is and what it does, how to write docker files and how to use docker compose.
+- Learned the logic and relationships between springboot services and controllers with the JPA repository to implement an api.
+- Learned what postman is and the benifits of using it to initiate HTTP requests.
+- While researching i learned what are different types of testing and understood why only unit tests were the ones required for this assignment.
+- Learned documentation using MarkDown and the understood different features it has. I aim to learn more about as i believe a proper documentation is a crucial part of a successful project.
+- Learned what is REST and used a REST controller instead of a normal one to implement web and http features without having to write html files.
+- I started this assignment thinking i could never get it done in two days because a huge part of the concepts needed to do it were not familiar to me. Getting it done "kinda" made me understand that when put enough effort in, nothing is impossible.
+- This assignment also made me understand the power of connections and the importance of networking. I have a colleague who is experienced with similar projects who helped me by telling me some best practices and guided me to some references to learn from.
